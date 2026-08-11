@@ -1,4 +1,58 @@
+mod screens;
+mod state;
+mod theme;
+
+use std::path::Path;
+
+use bevy::prelude::*;
+use bevy::window::WindowResolution;
+
+use deduced_content::load_content_from_dir;
+
+use screens::{menu, playing, result};
+use state::{AppState, ContentRes, RoundRes, SelectedCategory};
+
 fn main() {
-    println!("deduced-game is reserved for the future Bevy client.");
-    println!("Build and play-test the core loop with `cargo run -p deduced-cli` first.");
+    let content = load_content_from_dir(Path::new("content"))
+        .expect("game content must load from the content/ directory");
+
+    App::new()
+        .insert_resource(ContentRes(content))
+        .insert_resource(SelectedCategory::default())
+        .insert_resource(RoundRes::default())
+        .add_plugins(DefaultPlugins.set(WindowPlugin {
+            primary_window: Some(Window {
+                title: "DEDUCED".into(),
+                resolution: WindowResolution::new(390, 844),
+                resizable: false,
+                ..default()
+            }),
+            ..default()
+        }))
+        .init_state::<AppState>()
+        .add_systems(Startup, spawn_camera)
+        .add_systems(OnEnter(AppState::Menu), menu::setup)
+        .add_systems(OnExit(AppState::Menu), menu::teardown)
+        .add_systems(
+            Update,
+            menu::handle_buttons.run_if(in_state(AppState::Menu)),
+        )
+        .add_systems(OnEnter(AppState::Playing), playing::setup)
+        .add_systems(OnExit(AppState::Playing), playing::teardown)
+        .add_systems(
+            Update,
+            (playing::handle_answer_buttons, playing::handle_scroll)
+                .run_if(in_state(AppState::Playing)),
+        )
+        .add_systems(OnEnter(AppState::Result), result::setup)
+        .add_systems(OnExit(AppState::Result), result::teardown)
+        .add_systems(
+            Update,
+            result::handle_buttons.run_if(in_state(AppState::Result)),
+        )
+        .run();
+}
+
+fn spawn_camera(mut commands: Commands) {
+    commands.spawn(Camera2d);
 }

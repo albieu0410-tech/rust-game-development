@@ -9,3 +9,10 @@
 !.env.example
 .idea/
 .vscode/
+
+# Bevy/game-dev local artifacts
+screenshots/
+trace-*.json
+trace_avg*.json
+*.trace
+shader_cache/
