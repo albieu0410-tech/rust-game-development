@@ -1,0 +1,9 @@
+[package]
+name = "deduced-cli"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+deduced-content = { path = "../../crates/deduced-content" }
+deduced-core = { path = "../../crates/deduced-core" }

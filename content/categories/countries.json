@@ -1,0 +1,12 @@
+{
+  "id": "countries",
+  "name": "Countries",
+  "attempts": 5,
+  "attributes": [
+    { "key": "continent", "label": "Continent", "comparison": "exact" },
+    { "key": "population_m", "label": "Population", "comparison": "numeric" },
+    { "key": "area_km2", "label": "Area", "comparison": "numeric" },
+    { "key": "hemisphere", "label": "Hemisphere", "comparison": "tags" },
+    { "key": "coastline", "label": "Coastline", "comparison": "bool" }
+  ]
+}

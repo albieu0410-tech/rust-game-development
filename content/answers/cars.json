@@ -1,0 +1,132 @@
+[
+  {
+    "id": "car_mazda",
+    "name": "Mazda",
+    "category": "cars",
+    "image": "images/cars/mazda.png",
+    "attributes": [
+      { "key": "country", "value": { "Text": "Japan" } },
+      { "key": "founded", "value": { "Number": 1920 } },
+      { "key": "name_length", "value": { "Number": 5 } },
+      { "key": "industry", "value": { "Text": "Automotive" } },
+      { "key": "primary_color", "value": { "Text": "Red" } }
+    ]
+  },
+  {
+    "id": "car_toyota",
+    "name": "Toyota",
+    "category": "cars",
+    "image": "images/cars/toyota.png",
+    "attributes": [
+      { "key": "country", "value": { "Text": "Japan" } },
+      { "key": "founded", "value": { "Number": 1937 } },
+      { "key": "name_length", "value": { "Number": 6 } },
+      { "key": "industry", "value": { "Text": "Automotive" } },
+      { "key": "primary_color", "value": { "Text": "Red" } }
+    ]
+  },
+  {
+    "id": "car_bmw",
+    "name": "BMW",
+    "category": "cars",
+    "image": "images/cars/bmw.png",
+    "attributes": [
+      { "key": "country", "value": { "Text": "Germany" } },
+      { "key": "founded", "value": { "Number": 1916 } },
+      { "key": "name_length", "value": { "Number": 3 } },
+      { "key": "industry", "value": { "Text": "Automotive" } },
+      { "key": "primary_color", "value": { "Text": "Blue" } }
+    ]
+  },
+  {
+    "id": "car_ford",
+    "name": "Ford",
+    "category": "cars",
+    "image": "images/cars/ford.png",
+    "attributes": [
+      { "key": "country", "value": { "Text": "United States" } },
+      { "key": "founded", "value": { "Number": 1903 } },
+      { "key": "name_length", "value": { "Number": 4 } },
+      { "key": "industry", "value": { "Text": "Automotive" } },
+      { "key": "primary_color", "value": { "Text": "Blue" } }
+    ]
+  },
+  {
+    "id": "car_hyundai",
+    "name": "Hyundai",
+    "category": "cars",
+    "image": "images/cars/hyundai.png",
+    "attributes": [
+      { "key": "country", "value": { "Text": "South Korea" } },
+      { "key": "founded", "value": { "Number": 1967 } },
+      { "key": "name_length", "value": { "Number": 7 } },
+      { "key": "industry", "value": { "Text": "Automotive" } },
+      { "key": "primary_color", "value": { "Text": "Blue" } }
+    ]
+  },
+  {
+    "id": "car_volvo",
+    "name": "Volvo",
+    "category": "cars",
+    "image": "images/cars/volvo.png",
+    "attributes": [
+      { "key": "country", "value": { "Text": "Sweden" } },
+      { "key": "founded", "value": { "Number": 1927 } },
+      { "key": "name_length", "value": { "Number": 5 } },
+      { "key": "industry", "value": { "Text": "Automotive" } },
+      { "key": "primary_color", "value": { "Text": "Blue" } }
+    ]
+  },
+  {
+    "id": "car_ferrari",
+    "name": "Ferrari",
+    "category": "cars",
+    "image": "images/cars/ferrari.png",
+    "attributes": [
+      { "key": "country", "value": { "Text": "Italy" } },
+      { "key": "founded", "value": { "Number": 1947 } },
+      { "key": "name_length", "value": { "Number": 7 } },
+      { "key": "industry", "value": { "Text": "Automotive" } },
+      { "key": "primary_color", "value": { "Text": "Red" } }
+    ]
+  },
+  {
+    "id": "car_tesla",
+    "name": "Tesla",
+    "category": "cars",
+    "image": "images/cars/tesla.png",
+    "attributes": [
+      { "key": "country", "value": { "Text": "United States" } },
+      { "key": "founded", "value": { "Number": 2003 } },
+      { "key": "name_length", "value": { "Number": 5 } },
+      { "key": "industry", "value": { "Text": "Automotive" } },
+      { "key": "primary_color", "value": { "Text": "Red" } }
+    ]
+  },
+  {
+    "id": "car_honda",
+    "name": "Honda",
+    "category": "cars",
+    "image": "images/cars/honda.png",
+    "attributes": [
+      { "key": "country", "value": { "Text": "Japan" } },
+      { "key": "founded", "value": { "Number": 1948 } },
+      { "key": "name_length", "value": { "Number": 5 } },
+      { "key": "industry", "value": { "Text": "Automotive" } },
+      { "key": "primary_color", "value": { "Text": "Red" } }
+    ]
+  },
+  {
+    "id": "car_volkswagen",
+    "name": "Volkswagen",
+    "category": "cars",
+    "image": "images/cars/volkswagen.png",
+    "attributes": [
+      { "key": "country", "value": { "Text": "Germany" } },
+      { "key": "founded", "value": { "Number": 1937 } },
+      { "key": "name_length", "value": { "Number": 10 } },
+      { "key": "industry", "value": { "Text": "Automotive" } },
+      { "key": "primary_color", "value": { "Text": "Blue" } }
+    ]
+  }
+]

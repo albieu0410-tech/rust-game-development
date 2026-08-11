@@ -1,0 +1,132 @@
+[
+  {
+    "id": "country_japan",
+    "name": "Japan",
+    "category": "countries",
+    "image": "images/countries/japan.png",
+    "attributes": [
+      { "key": "continent", "value": { "Text": "Asia" } },
+      { "key": "population_m", "value": { "Number": 124 } },
+      { "key": "area_km2", "value": { "Number": 377975 } },
+      { "key": "hemisphere", "value": { "Tags": ["Northern", "Eastern"] } },
+      { "key": "coastline", "value": { "Bool": true } }
+    ]
+  },
+  {
+    "id": "country_germany",
+    "name": "Germany",
+    "category": "countries",
+    "image": "images/countries/germany.png",
+    "attributes": [
+      { "key": "continent", "value": { "Text": "Europe" } },
+      { "key": "population_m", "value": { "Number": 84 } },
+      { "key": "area_km2", "value": { "Number": 357588 } },
+      { "key": "hemisphere", "value": { "Tags": ["Northern", "Eastern"] } },
+      { "key": "coastline", "value": { "Bool": true } }
+    ]
+  },
+  {
+    "id": "country_brazil",
+    "name": "Brazil",
+    "category": "countries",
+    "image": "images/countries/brazil.png",
+    "attributes": [
+      { "key": "continent", "value": { "Text": "South America" } },
+      { "key": "population_m", "value": { "Number": 203 } },
+      { "key": "area_km2", "value": { "Number": 8515767 } },
+      { "key": "hemisphere", "value": { "Tags": ["Southern", "Western"] } },
+      { "key": "coastline", "value": { "Bool": true } }
+    ]
+  },
+  {
+    "id": "country_canada",
+    "name": "Canada",
+    "category": "countries",
+    "image": "images/countries/canada.png",
+    "attributes": [
+      { "key": "continent", "value": { "Text": "North America" } },
+      { "key": "population_m", "value": { "Number": 40 } },
+      { "key": "area_km2", "value": { "Number": 9984670 } },
+      { "key": "hemisphere", "value": { "Tags": ["Northern", "Western"] } },
+      { "key": "coastline", "value": { "Bool": true } }
+    ]
+  },
+  {
+    "id": "country_australia",
+    "name": "Australia",
+    "category": "countries",
+    "image": "images/countries/australia.png",
+    "attributes": [
+      { "key": "continent", "value": { "Text": "Oceania" } },
+      { "key": "population_m", "value": { "Number": 27 } },
+      { "key": "area_km2", "value": { "Number": 7692024 } },
+      { "key": "hemisphere", "value": { "Tags": ["Southern", "Eastern"] } },
+      { "key": "coastline", "value": { "Bool": true } }
+    ]
+  },
+  {
+    "id": "country_egypt",
+    "name": "Egypt",
+    "category": "countries",
+    "image": "images/countries/egypt.png",
+    "attributes": [
+      { "key": "continent", "value": { "Text": "Africa" } },
+      { "key": "population_m", "value": { "Number": 112 } },
+      { "key": "area_km2", "value": { "Number": 1002450 } },
+      { "key": "hemisphere", "value": { "Tags": ["Northern", "Eastern"] } },
+      { "key": "coastline", "value": { "Bool": true } }
+    ]
+  },
+  {
+    "id": "country_india",
+    "name": "India",
+    "category": "countries",
+    "image": "images/countries/india.png",
+    "attributes": [
+      { "key": "continent", "value": { "Text": "Asia" } },
+      { "key": "population_m", "value": { "Number": 1428 } },
+      { "key": "area_km2", "value": { "Number": 3287263 } },
+      { "key": "hemisphere", "value": { "Tags": ["Northern", "Eastern"] } },
+      { "key": "coastline", "value": { "Bool": true } }
+    ]
+  },
+  {
+    "id": "country_france",
+    "name": "France",
+    "category": "countries",
+    "image": "images/countries/france.png",
+    "attributes": [
+      { "key": "continent", "value": { "Text": "Europe" } },
+      { "key": "population_m", "value": { "Number": 68 } },
+      { "key": "area_km2", "value": { "Number": 643801 } },
+      { "key": "hemisphere", "value": { "Tags": ["Northern", "Eastern"] } },
+      { "key": "coastline", "value": { "Bool": true } }
+    ]
+  },
+  {
+    "id": "country_mexico",
+    "name": "Mexico",
+    "category": "countries",
+    "image": "images/countries/mexico.png",
+    "attributes": [
+      { "key": "continent", "value": { "Text": "North America" } },
+      { "key": "population_m", "value": { "Number": 129 } },
+      { "key": "area_km2", "value": { "Number": 1964375 } },
+      { "key": "hemisphere", "value": { "Tags": ["Northern", "Western"] } },
+      { "key": "coastline", "value": { "Bool": true } }
+    ]
+  },
+  {
+    "id": "country_south_africa",
+    "name": "South Africa",
+    "category": "countries",
+    "image": "images/countries/south_africa.png",
+    "attributes": [
+      { "key": "continent", "value": { "Text": "Africa" } },
+      { "key": "population_m", "value": { "Number": 60 } },
+      { "key": "area_km2", "value": { "Number": 1221037 } },
+      { "key": "hemisphere", "value": { "Tags": ["Southern", "Eastern"] } },
+      { "key": "coastline", "value": { "Bool": true } }
+    ]
+  }
+]

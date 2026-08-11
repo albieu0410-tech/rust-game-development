@@ -1,0 +1,132 @@
+[
+  {
+    "id": "company_apple",
+    "name": "Apple",
+    "category": "companies",
+    "image": "images/companies/apple.png",
+    "attributes": [
+      { "key": "country", "value": { "Text": "United States" } },
+      { "key": "founded", "value": { "Number": 1976 } },
+      { "key": "industry", "value": { "Text": "Technology" } },
+      { "key": "employees_band", "value": { "Text": "100k+" } },
+      { "key": "public", "value": { "Bool": true } }
+    ]
+  },
+  {
+    "id": "company_nintendo",
+    "name": "Nintendo",
+    "category": "companies",
+    "image": "images/companies/nintendo.png",
+    "attributes": [
+      { "key": "country", "value": { "Text": "Japan" } },
+      { "key": "founded", "value": { "Number": 1889 } },
+      { "key": "industry", "value": { "Text": "Gaming" } },
+      { "key": "employees_band", "value": { "Text": "5k-25k" } },
+      { "key": "public", "value": { "Bool": true } }
+    ]
+  },
+  {
+    "id": "company_ikea",
+    "name": "IKEA",
+    "category": "companies",
+    "image": "images/companies/ikea.png",
+    "attributes": [
+      { "key": "country", "value": { "Text": "Sweden" } },
+      { "key": "founded", "value": { "Number": 1943 } },
+      { "key": "industry", "value": { "Text": "Retail" } },
+      { "key": "employees_band", "value": { "Text": "100k+" } },
+      { "key": "public", "value": { "Bool": false } }
+    ]
+  },
+  {
+    "id": "company_microsoft",
+    "name": "Microsoft",
+    "category": "companies",
+    "image": "images/companies/microsoft.png",
+    "attributes": [
+      { "key": "country", "value": { "Text": "United States" } },
+      { "key": "founded", "value": { "Number": 1975 } },
+      { "key": "industry", "value": { "Text": "Technology" } },
+      { "key": "employees_band", "value": { "Text": "100k+" } },
+      { "key": "public", "value": { "Bool": true } }
+    ]
+  },
+  {
+    "id": "company_samsung",
+    "name": "Samsung",
+    "category": "companies",
+    "image": "images/companies/samsung.png",
+    "attributes": [
+      { "key": "country", "value": { "Text": "South Korea" } },
+      { "key": "founded", "value": { "Number": 1938 } },
+      { "key": "industry", "value": { "Text": "Technology" } },
+      { "key": "employees_band", "value": { "Text": "100k+" } },
+      { "key": "public", "value": { "Bool": true } }
+    ]
+  },
+  {
+    "id": "company_toyota",
+    "name": "Toyota",
+    "category": "companies",
+    "image": "images/companies/toyota.png",
+    "attributes": [
+      { "key": "country", "value": { "Text": "Japan" } },
+      { "key": "founded", "value": { "Number": 1937 } },
+      { "key": "industry", "value": { "Text": "Automotive" } },
+      { "key": "employees_band", "value": { "Text": "100k+" } },
+      { "key": "public", "value": { "Bool": true } }
+    ]
+  },
+  {
+    "id": "company_sony",
+    "name": "Sony",
+    "category": "companies",
+    "image": "images/companies/sony.png",
+    "attributes": [
+      { "key": "country", "value": { "Text": "Japan" } },
+      { "key": "founded", "value": { "Number": 1946 } },
+      { "key": "industry", "value": { "Text": "Technology" } },
+      { "key": "employees_band", "value": { "Text": "100k+" } },
+      { "key": "public", "value": { "Bool": true } }
+    ]
+  },
+  {
+    "id": "company_spotify",
+    "name": "Spotify",
+    "category": "companies",
+    "image": "images/companies/spotify.png",
+    "attributes": [
+      { "key": "country", "value": { "Text": "Sweden" } },
+      { "key": "founded", "value": { "Number": 2006 } },
+      { "key": "industry", "value": { "Text": "Technology" } },
+      { "key": "employees_band", "value": { "Text": "5k-25k" } },
+      { "key": "public", "value": { "Bool": true } }
+    ]
+  },
+  {
+    "id": "company_lego",
+    "name": "LEGO",
+    "category": "companies",
+    "image": "images/companies/lego.png",
+    "attributes": [
+      { "key": "country", "value": { "Text": "Denmark" } },
+      { "key": "founded", "value": { "Number": 1932 } },
+      { "key": "industry", "value": { "Text": "Toys" } },
+      { "key": "employees_band", "value": { "Text": "5k-25k" } },
+      { "key": "public", "value": { "Bool": false } }
+    ]
+  },
+  {
+    "id": "company_adidas",
+    "name": "Adidas",
+    "category": "companies",
+    "image": "images/companies/adidas.png",
+    "attributes": [
+      { "key": "country", "value": { "Text": "Germany" } },
+      { "key": "founded", "value": { "Number": 1949 } },
+      { "key": "industry", "value": { "Text": "Apparel" } },
+      { "key": "employees_band", "value": { "Text": "25k-100k" } },
+      { "key": "public", "value": { "Bool": true } }
+    ]
+  }
+]

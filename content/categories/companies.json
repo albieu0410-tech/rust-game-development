@@ -1,0 +1,12 @@
+{
+  "id": "companies",
+  "name": "Companies",
+  "attempts": 5,
+  "attributes": [
+    { "key": "country", "label": "Country", "comparison": "exact" },
+    { "key": "founded", "label": "Founded", "comparison": "numeric" },
+    { "key": "industry", "label": "Industry", "comparison": "exact" },
+    { "key": "employees_band", "label": "Employees", "comparison": "exact" },
+    { "key": "public", "label": "Public", "comparison": "bool" }
+  ]
+}

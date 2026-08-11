@@ -1,0 +1,12 @@
+{
+  "id": "cars",
+  "name": "Cars",
+  "attempts": 5,
+  "attributes": [
+    { "key": "country", "label": "Country", "comparison": "exact" },
+    { "key": "founded", "label": "Founded", "comparison": "numeric" },
+    { "key": "name_length", "label": "Letters", "comparison": "numeric" },
+    { "key": "industry", "label": "Industry", "comparison": "exact" },
+    { "key": "primary_color", "label": "Color", "comparison": "exact" }
+  ]
+}
