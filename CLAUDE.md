@@ -4,7 +4,7 @@ Guidance for Claude or other coding agents working in this repository.
 
 ## Project Intent
 
-DEDUCED is a Rust workspace for a reusable deduction game engine plus multiple clients. The first useful deliverable is a playable CLI that proves the core loop before investing in Bevy UI, saves, bots, or networking.
+DEDUCED is a Rust workspace for a reusable deduction game engine plus multiple clients. The first useful deliverable was a playable CLI that proves the core loop; a Bevy client (`deduced-game`) now also exists as a windowed, phone-aspect-ratio (390x844) demo built on the same `deduced-core`/`deduced-content` APIs. This pulled Bevy work ahead of the `docs/phases.md` Phase 4 schedule at explicit user request — the CLI is still the fastest place to play-test new rules before wiring them into Bevy screens.
 
 ## Key Constraint
 
@@ -17,7 +17,7 @@ DEDUCED is a Rust workspace for a reusable deduction game engine plus multiple c
 - `deduced-save`: profile, stats, and storage traits.
 - `deduced-bot`: bot policies using the public core API.
 - `deduced-cli`: terminal prototype for rapid play-testing.
-- `deduced-game`: future Bevy client.
+- `deduced-game`: Bevy client (menu/playing/result screens in `src/screens/`); reads the same `content/` JSON and drives rounds through `deduced-core::Round`.
 
 ## Before Editing
 
@@ -39,4 +39,10 @@ For game-loop changes, also run:
 
 ```bash
 cargo run -p deduced-cli
+```
+
+For `deduced-game` UI changes, also run and click through it:
+
+```bash
+cargo run -p deduced-game
 ```

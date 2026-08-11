@@ -16,7 +16,7 @@ This repo is organized around a strict separation between the reusable deduction
 2. Add or update focused tests for deduction/scoring behavior.
 3. Update content validation when the JSON shape changes.
 4. Keep `deduced-cli` as the fastest way to play-test the loop.
-5. Only move behavior into Bevy after it has been proven in the CLI or tests.
+5. Prefer proving new rules in the CLI or core tests before wiring them into `deduced-game` screens (`apps/deduced-game/src/screens/`).
 
 ## Commands
 
@@ -24,6 +24,7 @@ This repo is organized around a strict separation between the reusable deduction
 cargo fmt --all
 cargo test --workspace
 cargo run -p deduced-cli
+cargo run -p deduced-game
 ```
 
 ## Content Rules

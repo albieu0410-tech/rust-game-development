@@ -2,7 +2,7 @@
 
 DEDUCED is an offline-first deduction game built as a Rust workspace. The core deduction engine is intentionally independent from UI, Bevy, networking, persistence, accounts, ads, and any future backend.
 
-The first goal is a small playable CLI game using starter Cars, Companies, and Countries content. Once the core loop feels good, Bevy and persistence can sit on top of the same reusable rules.
+The first goal was a small playable CLI game using starter Cars, Companies, and Countries content. That loop now also runs in `deduced-game`, a Bevy client windowed at phone size (390x844) as an early visual demo, sitting on top of the same reusable rules.
 
 ## Workspace Layout
 
@@ -23,7 +23,7 @@ crates/
   deduced-bot/       # bot guessing policies
 apps/
   deduced-cli/       # first playable client
-  deduced-game/      # future Bevy client
+  deduced-game/      # Bevy client, windowed as a phone-emulator demo
 docs/
   architecture.md
   phases.md
@@ -51,11 +51,21 @@ It should only understand answers, guesses, attributes, comparisons, rounds, att
 
 ## First Run
 
+CLI:
+
 ```bash
 cargo run -p deduced-cli
 ```
 
 Then choose a category and type guesses by answer name or id.
+
+Bevy phone-emulator demo:
+
+```bash
+cargo run -p deduced-game
+```
+
+Opens a fixed 390x844 window: pick a category, tap answers to guess, and read the color-coded clue chips (green = match, orange = higher, blue = lower, red = different, yellow = partial).
 
 ## Development Checks
 
@@ -63,6 +73,7 @@ Then choose a category and type guesses by answer name or id.
 cargo fmt --all
 cargo test --workspace
 cargo run -p deduced-cli
+cargo run -p deduced-game
 ```
 
 ## Current Milestone
@@ -75,5 +86,6 @@ cargo run -p deduced-cli
 - JSON content loading
 - basic CLI play loop
 - initial scoring
+- a Bevy phone-emulator demo of the same loop
 
-See [docs/phases.md](docs/phases.md) for the full staged plan.
+See [docs/phases.md](docs/phases.md) for the full staged plan (the Bevy client was built ahead of its Phase 4 slot by request).
