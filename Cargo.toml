@@ -8,6 +8,7 @@ members = [
     "crates/deduced-bot",
     "apps/deduced-cli",
     "apps/deduced-game",
+    "apps/deduced-web",
 ]
 
 [workspace.package]

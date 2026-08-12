@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>DEDUCED</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+
+<div class="device-switcher">
+  <button class="device-btn active" data-device="full" onclick="setDevice('full', this)">⛶ Full</button>
+  <button class="device-btn" data-device="phone" onclick="setDevice('phone', this)">📱 Phone</button>
+  <button class="device-btn" data-device="tablet" onclick="setDevice('tablet', this)">📱 Tablet</button>
+  <button class="device-btn" data-device="desktop" onclick="setDevice('desktop', this)">🖥️ Desktop</button>
+</div>
+
+<div class="device-stage" id="deviceStage">
+<div class="device-scaler" id="deviceScaler">
+<div class="device-frame" id="deviceFrame">
+<div class="app">
+
+  <!-- HOME -->
+  <section id="home" class="screen active">
+
+    <div class="topbar">
+
+      <div class="user-mini">
+        <div class="avatar">S</div>
+
+        <div class="user-meta">
+          <strong>DeduceR</strong>
+          <small>Level 12</small>
+        </div>
+      </div>
+
+      <div class="brand">
+        <div class="brand-mark">D</div>
+        DEDUCED
+      </div>
+
+    </div>
+
+    <div class="hero">
+
+      <div class="logo-big">D</div>
+
+      <h1>DEDUCED</h1>
+
+      <p>
+        Every wrong guess makes you smarter.
+      </p>
+
+    </div>
+
+    <div class="content">
+
+      <div class="section-title">
+        Play
+      </div>
+
+      <div class="mode-card" onclick="goToCategories()">
+
+        <div class="mode-left">
+
+          <div class="mode-icon">🎯</div>
+
+          <div>
+            <h3>Solo</h3>
+            <p>Choose a category and start deducing</p>
+          </div>
+
+        </div>
+
+        <div class="arrow">›</div>
+
+      </div>
+
+      <div class="mode-card" onclick="showScreen('daily')">
+
+        <div class="mode-left">
+
+          <div class="mode-icon">📅</div>
+
+          <div>
+            <h3>Daily Deduction</h3>
+            <p>One puzzle shared worldwide</p>
+          </div>
+
+        </div>
+
+        <div class="arrow">›</div>
+
+      </div>
+
+      <div class="mode-card" onclick="showScreen('versus')">
+
+        <div class="mode-left">
+
+          <div class="mode-icon">⚔️</div>
+
+          <div>
+            <h3>Versus</h3>
+            <p>Challenge another player</p>
+          </div>
+
+        </div>
+
+        <div class="arrow">›</div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- CATEGORIES -->
+  <section id="categories" class="screen">
+
+    <div class="topbar">
+
+      <button class="icon-btn" onclick="showScreen('home')">←</button>
+
+      <strong>Categories</strong>
+
+      <div style="width:42px"></div>
+
+    </div>
+
+    <div class="content">
+
+      <h2>What do you know?</h2>
+
+      <p style="color:var(--muted)">
+        Pick a category and test your deduction skills.
+      </p>
+
+      <div class="category-grid" id="categoryGrid">
+        <!-- populated from /api/categories -->
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- GAME (streamlined single-screen loop) -->
+  <section id="game" class="screen">
+
+    <div class="topbar">
+
+      <button class="icon-btn" onclick="exitGame()">←</button>
+
+      <strong id="gameCategoryLabel">—</strong>
+
+      <div id="gameHeartsLabel">❤️ 0</div>
+
+    </div>
+
+    <div class="game-shell">
+
+      <div class="game-summary">
+        <div class="game-summary-left">
+          <div>
+            <div class="round-label" id="gameRoundLabel">CARS</div>
+            <strong style="font-size:16px">Make your guess</strong>
+          </div>
+        </div>
+        <div id="attemptDots" class="attempts"></div>
+      </div>
+
+      <div class="image-wrap">
+        <div id="wrongToast" class="feedback-toast">Not quite — clues added</div>
+        <div id="imageCard" class="image-card">
+          <div id="revealGrid" class="reveal-grid"></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="reveal-inline">
+          <div class="progress-track">
+            <div id="revealFill" class="progress-fill" style="width:0%"></div>
+          </div>
+          <div id="revealCount" class="reveal-count">0/0</div>
+        </div>
+
+        <div id="knownPanel" class="known-panel">
+          <div class="known-head">Known facts</div>
+          <div id="knownChips" class="chips"></div>
+        </div>
+      </div>
+
+      <div class="deduction-zone">
+        <div class="deduction-head">
+          <span>Your deductions</span>
+          <small id="guessCounter">0 of 0 guesses</small>
+        </div>
+        <div id="guessHistory" class="guess-history">
+          <div style="color:var(--muted);font-size:12px;padding:6px 2px">
+            Your clues will build here after each guess.
+          </div>
+        </div>
+      </div>
+
+      <div class="guess-composer">
+        <div id="autocomplete" class="autocomplete"></div>
+        <div class="search-box">
+          🔎
+          <input id="guessInput" autocomplete="off" placeholder="Guess the answer..." />
+          <button class="submit-mini" onclick="submitGuess()">Guess</button>
+        </div>
+        <div id="suggestions" class="suggestions"></div>
+      </div>
+
+    </div>
+
+    <div id="resultOverlay" class="result-overlay">
+      <div class="result-card">
+        <div class="result-status" id="resultBadge">Solved</div>
+        <h1 id="resultHeadline">DEDUCED!</h1>
+        <p style="color:var(--muted);margin:0" id="resultSub">You figured it out.</p>
+
+        <div class="answer-card">
+          <div class="answer-logo" id="resultAnswerInitial">?</div>
+          <h2 style="margin:0" id="resultAnswerName">—</h2>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat-box">
+            <small>Attempts</small>
+            <strong id="resultAttempts">0/0</strong>
+          </div>
+
+          <div class="stat-box">
+            <small>Time</small>
+            <strong id="resultTime">0:00</strong>
+          </div>
+
+          <div class="stat-box">
+            <small>Score</small>
+            <strong id="resultScore">0</strong>
+          </div>
+        </div>
+
+        <button class="primary-btn" onclick="restartRound()">Next Round</button>
+        <button class="secondary-btn" onclick="exitGame()">Change Category</button>
+      </div>
+    </div>
+
+  </section>
+
+
+  <!-- DAILY -->
+  <section id="daily" class="screen">
+
+    <div class="topbar">
+
+      <button class="icon-btn" onclick="showScreen('home')">←</button>
+
+      <strong>Daily Deduction</strong>
+
+      <div>🔥 7</div>
+
+    </div>
+
+    <div class="content">
+
+      <div class="daily-card">
+
+        <div class="daily-icon">📅</div>
+
+        <div class="section-title">August 12</div>
+
+        <h1>Today's Deduction</h1>
+
+        <p style="color:var(--muted);line-height:1.6">
+          Everyone gets the same puzzle.
+          Solve it in the fewest attempts.
+        </p>
+
+        <div class="streak">🔥 7 day streak</div>
+
+        <button class="primary-btn" style="margin-top:25px" onclick="showScreen('home')">
+          Play Today's Puzzle
+        </button>
+
+      </div>
+
+      <div class="section-title">This Week</div>
+
+      <div class="list-card">
+        <span>Monday</span>
+        <strong style="color:var(--green)">✓ 3/5</strong>
+      </div>
+
+      <div class="list-card">
+        <span>Tuesday</span>
+        <strong style="color:var(--green)">✓ 2/5</strong>
+      </div>
+
+      <div class="list-card">
+        <span>Wednesday</span>
+        <strong>Today</strong>
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- VERSUS -->
+  <section id="versus" class="screen">
+
+    <div class="topbar">
+
+      <button class="icon-btn" onclick="showScreen('home')">←</button>
+
+      <strong>Versus</strong>
+
+      <div style="width:42px"></div>
+
+    </div>
+
+    <div class="content">
+
+      <h2>Choose how to compete</h2>
+
+      <p style="color:var(--muted)">
+        Battle friends, bots or players online.
+      </p>
+
+      <div class="mode-card">
+        <div class="mode-left">
+          <div class="mode-icon">⚡</div>
+          <div>
+            <h3>Quick Match</h3>
+            <p>Find an opponent</p>
+          </div>
+        </div>
+        <div class="arrow">›</div>
+      </div>
+
+      <div class="mode-card">
+        <div class="mode-left">
+          <div class="mode-icon">🏆</div>
+          <div>
+            <h3>Ranked</h3>
+            <p>Rating 1482 · Gold III</p>
+          </div>
+        </div>
+        <div class="arrow">›</div>
+      </div>
+
+      <div class="mode-card">
+        <div class="mode-left">
+          <div class="mode-icon">🤖</div>
+          <div>
+            <h3>VS Computer</h3>
+            <p>Available offline</p>
+          </div>
+        </div>
+        <div class="arrow">›</div>
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- PROFILE -->
+  <section id="profile" class="screen">
+
+    <div class="topbar">
+
+      <div style="width:42px"></div>
+
+      <strong>Your Stats</strong>
+
+      <button class="icon-btn">⚙</button>
+
+    </div>
+
+    <div class="content">
+
+      <div class="profile-card">
+
+        <div class="level-ring"><span>12</span></div>
+
+        <div class="profile-info">
+
+          <h3>DeduceR</h3>
+
+          <small>Deduction Master</small>
+
+          <div class="progress-track" style="margin-top:12px">
+            <div class="progress-fill" style="width:58%"></div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="stats-row">
+
+        <div class="stat-box">
+          <small>Played</small>
+          <strong>124</strong>
+        </div>
+
+        <div class="stat-box">
+          <small>Won</small>
+          <strong>98</strong>
+        </div>
+
+        <div class="stat-box">
+          <small>Win rate</small>
+          <strong>79%</strong>
+        </div>
+
+      </div>
+
+      <div class="list-card">
+        <span>🏅 Achievements</span>
+        <span>12 / 30 ›</span>
+      </div>
+
+      <div class="list-card">
+        <span>📊 Detailed Statistics</span>
+        <span>›</span>
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- STORE -->
+  <section id="store" class="screen">
+
+    <div class="topbar">
+
+      <div style="width:42px"></div>
+
+      <strong>Store</strong>
+
+      <div>💎 420</div>
+
+    </div>
+
+    <div class="content">
+
+      <div class="store-banner">
+
+        <div style="font-size:42px">✨</div>
+
+        <h2>Deduced Premium</h2>
+
+        <p style="color:#c2c8da;line-height:1.6">
+          Remove ads, unlock additional
+          offline content and customize
+          your profile.
+        </p>
+
+        <button class="primary-btn">View Premium</button>
+
+      </div>
+
+      <div class="section-title">Themes</div>
+
+      <div class="list-card">
+
+        <div>
+
+          <strong>Interface Palette</strong>
+
+          <div class="theme-switcher">
+            <button class="theme-dot purple" onclick="theme('purple')"></button>
+            <button class="theme-dot blue" onclick="theme('blue')"></button>
+            <button class="theme-dot green" onclick="theme('green')"></button>
+            <button class="theme-dot orange" onclick="theme('orange')"></button>
+            <button class="theme-dot gold" onclick="theme('gold')"></button>
+            <button class="theme-dot teal" onclick="theme('teal')"></button>
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="section-title">Packs</div>
+
+      <div class="mode-card">
+        <div class="mode-left">
+          <div class="mode-icon">🎮</div>
+          <div>
+            <h3>Gaming Pack</h3>
+            <p>250 new puzzles</p>
+          </div>
+        </div>
+        <strong>250 💎</strong>
+      </div>
+
+      <div class="mode-card">
+        <div class="mode-left">
+          <div class="mode-icon">⚽</div>
+          <div>
+            <h3>Football Pack</h3>
+            <p>300 players and clubs</p>
+          </div>
+        </div>
+        <strong>300 💎</strong>
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- NAVIGATION -->
+  <nav class="bottom-nav" id="bottomNav">
+
+    <button class="nav-btn active" onclick="nav('home',this)">
+      <span>⌂</span>
+      <span>Home</span>
+    </button>
+
+    <button class="nav-btn" onclick="nav('daily',this)">
+      <span>▣</span>
+      <span>Daily</span>
+    </button>
+
+    <button class="nav-btn" onclick="nav('versus',this)">
+      <span>⚔</span>
+      <span>Versus</span>
+    </button>
+
+    <button class="nav-btn" onclick="nav('profile',this)">
+      <span>♙</span>
+      <span>Profile</span>
+    </button>
+
+    <button class="nav-btn" onclick="nav('store',this)">
+      <span>◇</span>
+      <span>Store</span>
+    </button>
+
+  </nav>
+
+</div>
+</div>
+</div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

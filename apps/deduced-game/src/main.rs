@@ -17,6 +17,7 @@ fn main() {
         .expect("game content must load from the content/ directory");
 
     App::new()
+        .insert_resource(ClearColor(theme::BG_BOTTOM))
         .insert_resource(ContentRes(content))
         .insert_resource(SelectedCategory::default())
         .insert_resource(RoundRes::default())
