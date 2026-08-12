@@ -128,5 +128,44 @@
       { "key": "hemisphere", "value": { "Tags": ["Southern", "Eastern"] } },
       { "key": "coastline", "value": { "Bool": true } }
     ]
+  },
+  {
+    "id": "country_switzerland",
+    "name": "Switzerland",
+    "category": "countries",
+    "image": "images/countries/switzerland.png",
+    "attributes": [
+      { "key": "continent", "value": { "Text": "Europe" } },
+      { "key": "population_m", "value": { "Number": 8.8 } },
+      { "key": "area_km2", "value": { "Number": 41285 } },
+      { "key": "hemisphere", "value": { "Tags": ["Northern", "Eastern"] } },
+      { "key": "coastline", "value": { "Bool": false } }
+    ]
+  },
+  {
+    "id": "country_mongolia",
+    "name": "Mongolia",
+    "category": "countries",
+    "image": "images/countries/mongolia.png",
+    "attributes": [
+      { "key": "continent", "value": { "Text": "Asia" } },
+      { "key": "population_m", "value": { "Number": 3.4 } },
+      { "key": "area_km2", "value": { "Number": 1564110 } },
+      { "key": "hemisphere", "value": { "Tags": ["Northern", "Eastern"] } },
+      { "key": "coastline", "value": { "Bool": false } }
+    ]
+  },
+  {
+    "id": "country_bolivia",
+    "name": "Bolivia",
+    "category": "countries",
+    "image": "images/countries/bolivia.png",
+    "attributes": [
+      { "key": "continent", "value": { "Text": "South America" } },
+      { "key": "population_m", "value": { "Number": 12 } },
+      { "key": "area_km2", "value": { "Number": 1098581 } },
+      { "key": "hemisphere", "value": { "Tags": ["Southern", "Western"] } },
+      { "key": "coastline", "value": { "Bool": false } }
+    ]
   }
 ]

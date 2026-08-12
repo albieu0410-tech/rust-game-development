@@ -16,3 +16,6 @@ trace-*.json
 trace_avg*.json
 *.trace
 shader_cache/
+
+# Local player save data
+/save/

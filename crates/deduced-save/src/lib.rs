@@ -4,4 +4,4 @@ pub mod storage;
 
 pub use profile::Profile;
 pub use stats::Stats;
-pub use storage::{SaveError, SaveStorage};
+pub use storage::{FileSaveStorage, SaveError, SaveStorage};

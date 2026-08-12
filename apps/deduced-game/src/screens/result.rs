@@ -1,8 +1,8 @@
 use bevy::prelude::*;
 
-use deduced_core::{RoundStatus, score_round};
+use deduced_save::SaveStorage;
 
-use crate::state::{AppState, RoundRes};
+use crate::state::{AppState, RoundRes, SaveRes};
 use crate::theme::{
     self, ACCENT, ACCENT_HOVER, ACCENT_PRESSED, DIFFERENT, MATCH, RADIUS_LG, RADIUS_MD, SURFACE,
     SURFACE_HOVER, SURFACE_PRESSED, TEXT, TEXT_DIM,
@@ -17,19 +17,29 @@ pub(crate) enum ResultAction {
     Menu,
 }
 
-pub fn setup(mut commands: Commands, round_res: Res<RoundRes>) {
-    let Some(round) = round_res.round.as_ref() else {
+pub fn setup(mut commands: Commands, round_res: Res<RoundRes>, mut save_res: ResMut<SaveRes>) {
+    let Some(controller) = round_res.controller.as_ref() else {
+        return;
+    };
+    let Some(result) = controller.result() else {
         return;
     };
 
-    let won = round.status == RoundStatus::Won;
+    save_res
+        .profile
+        .stats
+        .record_round(&result.category_id, result.won, result.score.points);
+    if let Err(err) = save_res.storage.save_profile(&save_res.profile) {
+        warn!("failed to save profile: {err}");
+    }
+    crate::sync::sync_profile_in_background(&save_res.profile);
+
+    let won = result.won;
     let (headline, headline_color, badge_color) = if won {
         ("You got it!".to_string(), MATCH, MATCH)
     } else {
         ("Out of attempts".to_string(), TEXT_DIM, DIFFERENT)
     };
-
-    let score = score_round(round);
 
     commands
         .spawn((
@@ -84,12 +94,12 @@ pub fn setup(mut commands: Commands, round_res: Res<RoundRes>) {
                     TextColor(headline_color),
                 ));
                 card.spawn((
-                    Text::new(format!("Answer: {}", round.answer.name)),
+                    Text::new(format!("Answer: {}", result.answer_name)),
                     theme::body_font(17.0),
                     TextColor(TEXT),
                 ));
                 card.spawn((
-                    Text::new(format!("Score: {}", score.points)),
+                    Text::new(format!("Score: {}", result.score.points)),
                     theme::body_font(15.0),
                     TextColor(TEXT_DIM),
                     Node {
@@ -171,12 +181,12 @@ pub fn handle_buttons(
                 *background = BackgroundColor(pressed);
                 match action {
                     ResultAction::PlayAgain => {
-                        round_res.round = None;
+                        round_res.controller = None;
                         next_state.set(AppState::Playing);
                     }
                     ResultAction::Menu => {
-                        round_res.round = None;
-                        next_state.set(AppState::Menu);
+                        round_res.controller = None;
+                        next_state.set(AppState::Categories);
                     }
                 }
             }

@@ -3,12 +3,15 @@ resolver = "2"
 
 members = [
     "crates/deduced-core",
+    "crates/deduced-gameplay",
     "crates/deduced-content",
     "crates/deduced-save",
     "crates/deduced-bot",
+    "crates/deduced-protocol",
     "apps/deduced-cli",
     "apps/deduced-game",
     "apps/deduced-web",
+    "apps/deduced-server",
 ]
 
 [workspace.package]

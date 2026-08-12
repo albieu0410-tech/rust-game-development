@@ -3,12 +3,12 @@ use std::time::{SystemTime, UNIX_EPOCH};
 use bevy::input::mouse::MouseWheel;
 use bevy::prelude::*;
 
-use deduced_core::{Round, RoundConfig, RoundStatus};
+use deduced_gameplay::{GameController, GameStatus, GameViewState, KnownFact};
 
 use crate::state::{AppState, ContentRes, RoundRes, SelectedCategory};
 use crate::theme::{
-    self, ACCENT, RADIUS_MD, RADIUS_PILL, RADIUS_SM, SURFACE, SURFACE_HOVER, TEXT, TEXT_DIM,
-    comparison_color, comparison_symbol,
+    self, ACCENT, HIGHER, LOWER, MATCH, PARTIAL, RADIUS_MD, RADIUS_PILL, RADIUS_SM, SURFACE,
+    SURFACE_HOVER, TEXT, TEXT_DIM, comparison_color, comparison_symbol,
 };
 
 #[derive(Component)]
@@ -16,6 +16,15 @@ pub struct OnPlayingScreen;
 
 #[derive(Component)]
 pub(crate) struct AttemptsText;
+
+#[derive(Component)]
+pub(crate) struct RevealFill;
+
+#[derive(Component)]
+pub(crate) struct RevealLabel;
+
+#[derive(Component)]
+pub(crate) struct KnownFactsContainer;
 
 #[derive(Component)]
 pub(crate) struct AnswerButtonsContainer;
@@ -29,6 +38,54 @@ pub(crate) struct AnswerButton(String);
 #[derive(Component)]
 pub(crate) struct Scrollable;
 
+fn fmt_num(value: f64) -> String {
+    if value.fract() == 0.0 {
+        format!("{}", value as i64)
+    } else {
+        value.to_string()
+    }
+}
+
+fn known_fact_text_and_color(fact: &KnownFact) -> (String, Color) {
+    match fact {
+        KnownFact::Exact { label, value, .. } => {
+            (format!("{label}: {}", value.display_value()), MATCH)
+        }
+        KnownFact::Range {
+            label, min, max, ..
+        } => match (min, max) {
+            (Some(min), Some(max)) => (
+                format!("{label}: {} - {}", fmt_num(*min), fmt_num(*max)),
+                PARTIAL,
+            ),
+            (Some(min), None) => (format!("{label} > {}", fmt_num(*min)), HIGHER),
+            (None, Some(max)) => (format!("{label} < {}", fmt_num(*max)), LOWER),
+            (None, None) => (label.clone(), TEXT_DIM),
+        },
+    }
+}
+
+fn render_known_facts(commands: &mut Commands, container: Entity, state: &GameViewState) {
+    commands.entity(container).despawn_children();
+    commands.entity(container).with_children(|panel| {
+        for fact in &state.known_facts {
+            let (text, color) = known_fact_text_and_color(fact);
+            panel
+                .spawn((
+                    Node {
+                        padding: UiRect::axes(Val::Px(8.0), Val::Px(5.0)),
+                        border_radius: BorderRadius::all(Val::Px(RADIUS_PILL)),
+                        ..default()
+                    },
+                    BackgroundColor(color.with_alpha(0.16)),
+                ))
+                .with_children(|chip| {
+                    chip.spawn((Text::new(text), theme::label_font(12.0), TextColor(color)));
+                });
+        }
+    });
+}
+
 pub fn setup(
     mut commands: Commands,
     content: Res<ContentRes>,
@@ -39,26 +96,27 @@ pub fn setup(
         return;
     };
 
-    if round_res.round.is_none() {
-        round_res.seed = SystemTime::now()
+    if round_res.controller.is_none() {
+        let seed = SystemTime::now()
             .duration_since(UNIX_EPOCH)
             .map(|d| d.as_nanos() as u64)
             .unwrap_or(1);
-        round_res.round = Round::new(
-            &content.0.answers,
-            RoundConfig {
-                category: category.id.clone(),
-                seed: round_res.seed,
-                max_attempts: category.attempts,
-            },
-        )
-        .ok();
+        round_res.controller =
+            GameController::new_solo(&content.0.answers, category.clone(), seed).ok();
     }
     let max_attempts = round_res
-        .round
+        .controller
         .as_ref()
-        .map(|round| round.max_attempts)
+        .map(|controller| controller.state().max_attempts)
         .unwrap_or(category.attempts);
+    let initial_reveal = round_res
+        .controller
+        .as_ref()
+        .map(|controller| controller.state().reveal)
+        .unwrap_or(deduced_gameplay::RevealState {
+            level: 1,
+            max_level: max_attempts.max(1) as u8,
+        });
 
     commands
         .spawn((
@@ -105,6 +163,61 @@ pub fn setup(
                         ));
                     });
             });
+
+            root.spawn(Node {
+                flex_direction: FlexDirection::Row,
+                align_items: AlignItems::Center,
+                column_gap: Val::Px(10.0),
+                ..default()
+            })
+            .with_children(|reveal_row| {
+                reveal_row
+                    .spawn((
+                        Node {
+                            flex_grow: 1.0,
+                            height: Val::Px(6.0),
+                            border_radius: BorderRadius::all(Val::Px(RADIUS_PILL)),
+                            ..default()
+                        },
+                        BackgroundColor(SURFACE),
+                    ))
+                    .with_children(|track| {
+                        track.spawn((
+                            RevealFill,
+                            Node {
+                                width: Val::Percent(
+                                    100.0 * initial_reveal.level as f32
+                                        / initial_reveal.max_level as f32,
+                                ),
+                                height: Val::Percent(100.0),
+                                border_radius: BorderRadius::all(Val::Px(RADIUS_PILL)),
+                                ..default()
+                            },
+                            BackgroundColor(ACCENT),
+                        ));
+                    });
+
+                reveal_row.spawn((
+                    RevealLabel,
+                    Text::new(format!(
+                        "{} / {}",
+                        initial_reveal.level, initial_reveal.max_level
+                    )),
+                    theme::label_font(12.0),
+                    TextColor(TEXT_DIM),
+                ));
+            });
+
+            root.spawn((
+                KnownFactsContainer,
+                Node {
+                    flex_direction: FlexDirection::Row,
+                    flex_wrap: FlexWrap::Wrap,
+                    column_gap: Val::Px(6.0),
+                    row_gap: Val::Px(6.0),
+                    ..default()
+                },
+            ));
 
             root.spawn((
                 AnswerButtonsContainer,
@@ -165,6 +278,9 @@ pub fn teardown(mut commands: Commands, query: Query<Entity, With<OnPlayingScree
     }
 }
 
+// Bevy systems commonly take this many distinct SystemParams; splitting them
+// into a bundle struct would hurt readability more than it helps here.
+#[allow(clippy::too_many_arguments)]
 pub fn handle_answer_buttons(
     mut commands: Commands,
     mut interactions: Query<
@@ -181,6 +297,9 @@ pub fn handle_answer_buttons(
     selected: Res<SelectedCategory>,
     mut round_res: ResMut<RoundRes>,
     mut attempts_text: Query<&mut Text, With<AttemptsText>>,
+    mut reveal_fill: Query<&mut Node, (With<RevealFill>, Without<AnswerButton>)>,
+    mut reveal_label: Query<&mut Text, (With<RevealLabel>, Without<AttemptsText>)>,
+    known_facts_container: Query<Entity, With<KnownFactsContainer>>,
     history_container: Query<Entity, With<HistoryContainer>>,
     mut next_state: ResMut<NextState<AppState>>,
 ) {
@@ -219,24 +338,35 @@ pub fn handle_answer_buttons(
         return;
     };
 
-    let Some(round) = round_res.round.as_mut() else {
+    let Some(controller) = round_res.controller.as_mut() else {
         return;
     };
 
-    let Ok(result) = round.submit_guess(category, guess).cloned() else {
+    let Ok(result) = controller.submit_guess(guess) else {
         return;
     };
+    let state = controller.state();
 
     if let Some(entity) = pressed_entity {
         commands.entity(entity).despawn();
     }
 
     for mut text in &mut attempts_text {
+        *text = Text::new(format!("{} / {}", state.attempts_used, state.max_attempts));
+    }
+
+    for mut node in &mut reveal_fill {
+        node.width =
+            Val::Percent(100.0 * state.reveal.level as f32 / state.reveal.max_level as f32);
+    }
+    for mut text in &mut reveal_label {
         *text = Text::new(format!(
             "{} / {}",
-            round.attempts_used(),
-            round.max_attempts
+            state.reveal.level, state.reveal.max_level
         ));
+    }
+    if let Ok(container) = known_facts_container.single() {
+        render_known_facts(&mut commands, container, &state);
     }
 
     if let Ok(container) = history_container.single() {
@@ -297,7 +427,7 @@ pub fn handle_answer_buttons(
         });
     }
 
-    if round.status != RoundStatus::Playing {
+    if state.status != GameStatus::Playing {
         next_state.set(AppState::Result);
     }
 }

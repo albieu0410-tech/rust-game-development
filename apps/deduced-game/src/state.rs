@@ -1,11 +1,14 @@
 use bevy::prelude::*;
 
-use deduced_core::{GameContent, Round};
+use deduced_core::GameContent;
+use deduced_gameplay::GameController;
+use deduced_save::{FileSaveStorage, Profile};
 
 #[derive(States, Debug, Clone, Copy, PartialEq, Eq, Hash, Default)]
 pub enum AppState {
     #[default]
-    Menu,
+    Home,
+    Categories,
     Playing,
     Result,
 }
@@ -18,6 +21,11 @@ pub struct SelectedCategory(pub String);
 
 #[derive(Resource, Default)]
 pub struct RoundRes {
-    pub round: Option<Round>,
-    pub seed: u64,
+    pub controller: Option<GameController>,
+}
+
+#[derive(Resource)]
+pub struct SaveRes {
+    pub storage: FileSaveStorage,
+    pub profile: Profile,
 }

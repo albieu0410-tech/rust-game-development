@@ -1,5 +1,6 @@
 mod screens;
 mod state;
+mod sync;
 mod theme;
 
 use std::path::Path;
@@ -8,19 +9,24 @@ use bevy::prelude::*;
 use bevy::window::WindowResolution;
 
 use deduced_content::load_content_from_dir;
+use deduced_save::{FileSaveStorage, SaveStorage};
 
-use screens::{menu, playing, result};
-use state::{AppState, ContentRes, RoundRes, SelectedCategory};
+use screens::{categories, home, playing, result};
+use state::{AppState, ContentRes, RoundRes, SaveRes, SelectedCategory};
 
 fn main() {
     let content = load_content_from_dir(Path::new("content"))
         .expect("game content must load from the content/ directory");
+
+    let storage = FileSaveStorage::new(Path::new("save/profile.json"));
+    let profile = storage.load_profile().unwrap_or_default();
 
     App::new()
         .insert_resource(ClearColor(theme::BG_BOTTOM))
         .insert_resource(ContentRes(content))
         .insert_resource(SelectedCategory::default())
         .insert_resource(RoundRes::default())
+        .insert_resource(SaveRes { storage, profile })
         .add_plugins(DefaultPlugins.set(WindowPlugin {
             primary_window: Some(Window {
                 title: "DEDUCED".into(),
@@ -32,11 +38,17 @@ fn main() {
         }))
         .init_state::<AppState>()
         .add_systems(Startup, spawn_camera)
-        .add_systems(OnEnter(AppState::Menu), menu::setup)
-        .add_systems(OnExit(AppState::Menu), menu::teardown)
+        .add_systems(OnEnter(AppState::Home), home::setup)
+        .add_systems(OnExit(AppState::Home), home::teardown)
         .add_systems(
             Update,
-            menu::handle_buttons.run_if(in_state(AppState::Menu)),
+            home::handle_buttons.run_if(in_state(AppState::Home)),
+        )
+        .add_systems(OnEnter(AppState::Categories), categories::setup)
+        .add_systems(OnExit(AppState::Categories), categories::teardown)
+        .add_systems(
+            Update,
+            categories::handle_buttons.run_if(in_state(AppState::Categories)),
         )
         .add_systems(OnEnter(AppState::Playing), playing::setup)
         .add_systems(OnExit(AppState::Playing), playing::teardown)

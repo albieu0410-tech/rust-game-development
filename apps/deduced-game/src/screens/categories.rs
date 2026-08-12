@@ -2,19 +2,22 @@ use bevy::prelude::*;
 
 use crate::state::{AppState, ContentRes, RoundRes, SelectedCategory};
 use crate::theme::{
-    self, ACCENT, RADIUS_MD, SURFACE, SURFACE_HOVER, SURFACE_PRESSED, TEXT, TEXT_DIM,
+    self, ACCENT, RADIUS_MD, RADIUS_SM, SURFACE, SURFACE_HOVER, SURFACE_PRESSED, TEXT, TEXT_DIM,
 };
 
 #[derive(Component)]
-pub struct OnMenuScreen;
+pub struct OnCategoriesScreen;
 
 #[derive(Component)]
 pub(crate) struct CategoryButton(String);
 
+#[derive(Component)]
+pub(crate) struct BackButton;
+
 pub fn setup(mut commands: Commands, content: Res<ContentRes>) {
     commands
         .spawn((
-            OnMenuScreen,
+            OnCategoriesScreen,
             Node {
                 width: Val::Percent(100.0),
                 height: Val::Percent(100.0),
@@ -29,30 +32,13 @@ pub fn setup(mut commands: Commands, content: Res<ContentRes>) {
         ))
         .with_children(|root| {
             root.spawn((
-                Node {
-                    width: Val::Px(72.0),
-                    height: Val::Px(72.0),
-                    justify_content: JustifyContent::Center,
-                    align_items: AlignItems::Center,
-                    margin: UiRect::bottom(Val::Px(6.0)),
-                    border_radius: BorderRadius::all(Val::Px(RADIUS_MD)),
-                    ..default()
-                },
-                BackgroundColor(ACCENT),
-                theme::button_shadow(),
-            ))
-            .with_children(|logo| {
-                logo.spawn((Text::new("D"), theme::heading_font(34.0), TextColor(TEXT)));
-            });
-
-            root.spawn((
-                Text::new("DEDUCED"),
-                theme::heading_font(32.0),
+                Text::new("What do you know?"),
+                theme::heading_font(26.0),
                 TextColor(TEXT),
             ));
             root.spawn((
-                Text::new("Pick a category to start deducing"),
-                theme::body_font(15.0),
+                Text::new("Pick a category and test your deduction skills."),
+                theme::body_font(14.0),
                 TextColor(TEXT_DIM),
                 Node {
                     margin: UiRect::bottom(Val::Px(14.0)),
@@ -86,17 +72,45 @@ pub fn setup(mut commands: Commands, content: Res<ContentRes>) {
                     ));
                 });
             }
+
+            root.spawn((
+                BackButton,
+                Button,
+                Node {
+                    width: Val::Px(280.0),
+                    height: Val::Px(48.0),
+                    justify_content: JustifyContent::Center,
+                    align_items: AlignItems::Center,
+                    margin: UiRect::top(Val::Px(20.0)),
+                    border_radius: BorderRadius::all(Val::Px(RADIUS_SM)),
+                    ..default()
+                },
+                BackgroundColor(Color::NONE),
+            ))
+            .with_children(|button| {
+                button.spawn((
+                    Text::new("Back"),
+                    theme::label_font(15.0),
+                    TextColor(TEXT_DIM),
+                ));
+            });
         });
 }
 
-pub fn teardown(mut commands: Commands, query: Query<Entity, With<OnMenuScreen>>) {
+pub fn teardown(mut commands: Commands, query: Query<Entity, With<OnCategoriesScreen>>) {
     for entity in &query {
         commands.entity(entity).despawn();
     }
 }
 
+type BackButtonFilter = (
+    Changed<Interaction>,
+    With<BackButton>,
+    Without<CategoryButton>,
+);
+
 pub fn handle_buttons(
-    mut interactions: Query<
+    mut category_interactions: Query<
         (
             &Interaction,
             &CategoryButton,
@@ -105,16 +119,17 @@ pub fn handle_buttons(
         ),
         Changed<Interaction>,
     >,
+    mut back_interactions: Query<&Interaction, BackButtonFilter>,
     mut selected: ResMut<SelectedCategory>,
     mut round: ResMut<RoundRes>,
     mut next_state: ResMut<NextState<AppState>>,
 ) {
-    for (interaction, category_button, mut background, mut border) in &mut interactions {
+    for (interaction, category_button, mut background, mut border) in &mut category_interactions {
         match interaction {
             Interaction::Pressed => {
                 *background = BackgroundColor(SURFACE_PRESSED);
                 selected.0 = category_button.0.clone();
-                round.round = None;
+                round.controller = None;
                 next_state.set(AppState::Playing);
             }
             Interaction::Hovered => {
@@ -125,6 +140,12 @@ pub fn handle_buttons(
                 *background = BackgroundColor(SURFACE);
                 *border = BorderColor::all(theme::BORDER);
             }
+        }
+    }
+
+    for interaction in &mut back_interactions {
+        if *interaction == Interaction::Pressed {
+            next_state.set(AppState::Home);
         }
     }
 }

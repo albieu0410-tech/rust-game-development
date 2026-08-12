@@ -9,6 +9,24 @@ use deduced_core::{Comparison, Round, RoundConfig, RoundStatus, score_round};
 
 fn main() -> Result<(), Box<dyn Error>> {
     let content = load_content_from_dir(Path::new("content"))?;
+    let seed = seed_from_args().unwrap_or(839_183);
+
+    if let Some(category_id) = reveal_answer_category_from_args() {
+        let Some(category) = content.category(&category_id) else {
+            println!("Unknown category: {category_id}");
+            return Ok(());
+        };
+        let round = Round::new(
+            &content.answers,
+            RoundConfig {
+                category: category.id.clone(),
+                seed,
+                max_attempts: category.attempts,
+            },
+        )?;
+        println!("{}\t{}", round.answer.id, round.answer.name);
+        return Ok(());
+    }
 
     println!("DEDUCED");
     println!();
@@ -27,7 +45,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         &content.answers,
         RoundConfig {
             category: category.id.clone(),
-            seed: 839_183,
+            seed,
             max_attempts: category.attempts,
         },
     )?;
@@ -35,6 +53,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     println!();
     println!("Category: {}", category.name);
     println!("Attempts: {}", round.max_attempts);
+    println!("Seed: {seed} (pass --seed <n> to reproduce or force a different round)");
     println!("Type a guess by name or id.");
 
     while round.status == RoundStatus::Playing {
@@ -80,6 +99,33 @@ fn main() -> Result<(), Box<dyn Error>> {
     }
 
     Ok(())
+}
+
+/// Reads `--seed <n>` from the command line so a developer can force or
+/// reproduce a specific round instead of always getting the default one.
+fn seed_from_args() -> Option<u64> {
+    let mut args = std::env::args();
+    while let Some(arg) = args.next() {
+        if arg == "--seed" {
+            return args.next()?.parse().ok();
+        }
+    }
+    None
+}
+
+/// Reads `--reveal-answer <category_id>`: prints `answer_id<TAB>answer_name`
+/// for the given (seed, category) and exits immediately, without an
+/// interactive loop. Dev/test tool only — lets automation and other clients
+/// (e.g. testing the multiplayer server) reproduce a known target instead of
+/// guessing blind.
+fn reveal_answer_category_from_args() -> Option<String> {
+    let mut args = std::env::args();
+    while let Some(arg) = args.next() {
+        if arg == "--reveal-answer" {
+            return args.next();
+        }
+    }
+    None
 }
 
 fn prompt(label: &str) -> io::Result<String> {

@@ -7,4 +7,9 @@ license.workspace = true
 [dependencies]
 deduced-content = { path = "../../crates/deduced-content" }
 deduced-core = { path = "../../crates/deduced-core" }
+deduced-gameplay = { path = "../../crates/deduced-gameplay" }
+deduced-save = { path = "../../crates/deduced-save" }
+deduced-protocol = { path = "../../crates/deduced-protocol" }
 bevy = "0.19"
+ureq = { version = "3", features = ["json"] }
+serde_json = { workspace = true }
