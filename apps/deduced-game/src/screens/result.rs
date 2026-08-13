@@ -2,6 +2,7 @@ use bevy::prelude::*;
 
 use deduced_save::SaveStorage;
 
+use crate::screens::nav;
 use crate::state::{AppState, RoundRes, SaveRes};
 use crate::theme::{
     self, ACCENT, ACCENT_HOVER, ACCENT_PRESSED, DIFFERENT, MATCH, RADIUS_LG, RADIUS_MD, SURFACE,
@@ -34,12 +35,33 @@ pub fn setup(mut commands: Commands, round_res: Res<RoundRes>, mut save_res: Res
     }
     crate::sync::sync_profile_in_background(&save_res.profile);
 
+    if round_res.is_daily
+        && let Some(challenge_id) = round_res.daily_challenge_id.clone()
+    {
+        let guesses = controller
+            .round()
+            .guesses
+            .iter()
+            .map(|guess| guess.answer_id.clone())
+            .collect();
+        let elapsed_ms = round_res
+            .started_at
+            .map(|started| started.elapsed().as_millis() as u64)
+            .unwrap_or(0);
+        crate::screens::daily::submit_in_background(challenge_id, &save_res, guesses, elapsed_ms);
+    }
+
     let won = result.won;
     let (headline, headline_color, badge_color) = if won {
-        ("You got it!".to_string(), MATCH, MATCH)
+        ("DEDUCED!".to_string(), MATCH, MATCH)
     } else {
-        ("Out of attempts".to_string(), TEXT_DIM, DIFFERENT)
+        ("Answer revealed".to_string(), TEXT_DIM, DIFFERENT)
     };
+    let elapsed = round_res
+        .started_at
+        .map(|started| started.elapsed())
+        .unwrap_or_default();
+    let elapsed_label = format!("{}:{:02}", elapsed.as_secs() / 60, elapsed.as_secs() % 60);
 
     commands
         .spawn((
@@ -93,20 +115,44 @@ pub fn setup(mut commands: Commands, round_res: Res<RoundRes>, mut save_res: Res
                     theme::heading_font(28.0),
                     TextColor(headline_color),
                 ));
+
                 card.spawn((
-                    Text::new(format!("Answer: {}", result.answer_name)),
-                    theme::body_font(17.0),
-                    TextColor(TEXT),
-                ));
-                card.spawn((
-                    Text::new(format!("Score: {}", result.score.points)),
-                    theme::body_font(15.0),
-                    TextColor(TEXT_DIM),
                     Node {
-                        margin: UiRect::bottom(Val::Px(8.0)),
+                        width: Val::Px(190.0),
+                        flex_direction: FlexDirection::Column,
+                        align_items: AlignItems::Center,
+                        padding: UiRect::all(Val::Px(18.0)),
+                        margin: UiRect::vertical(Val::Px(6.0)),
+                        border: UiRect::all(Val::Px(1.0)),
+                        border_radius: BorderRadius::all(Val::Px(RADIUS_MD)),
                         ..default()
                     },
-                ));
+                    BackgroundColor(SURFACE_HOVER),
+                    BorderColor::all(theme::BORDER),
+                ))
+                .with_children(|answer_card| {
+                    answer_card.spawn((
+                        Text::new(result.answer_name.clone()),
+                        theme::heading_font(19.0),
+                        TextColor(TEXT),
+                    ));
+                });
+
+                card.spawn(Node {
+                    flex_direction: FlexDirection::Row,
+                    column_gap: Val::Px(8.0),
+                    margin: UiRect::bottom(Val::Px(6.0)),
+                    ..default()
+                })
+                .with_children(|stats| {
+                    stat_box(
+                        stats,
+                        "Attempts",
+                        &format!("{}/{}", result.attempts_used, result.max_attempts),
+                    );
+                    stat_box(stats, "Time", &elapsed_label);
+                    stat_box(stats, "Score", &result.score.points.to_string());
+                });
 
                 card.spawn((
                     ResultAction::PlayAgain,
@@ -153,6 +199,36 @@ pub fn setup(mut commands: Commands, round_res: Res<RoundRes>, mut save_res: Res
                     ));
                 });
             });
+
+            nav::spawn(root, AppState::Result);
+        });
+}
+
+fn stat_box(parent: &mut ChildSpawnerCommands, label: &str, value: &str) {
+    parent
+        .spawn((
+            Node {
+                flex_direction: FlexDirection::Column,
+                align_items: AlignItems::Center,
+                row_gap: Val::Px(4.0),
+                padding: UiRect::axes(Val::Px(10.0), Val::Px(10.0)),
+                flex_grow: 1.0,
+                border_radius: BorderRadius::all(Val::Px(RADIUS_MD)),
+                ..default()
+            },
+            BackgroundColor(SURFACE),
+        ))
+        .with_children(|stat| {
+            stat.spawn((
+                Text::new(label.to_uppercase()),
+                theme::body_font(9.0),
+                TextColor(TEXT_DIM),
+            ));
+            stat.spawn((
+                Text::new(value.to_string()),
+                theme::heading_font(16.0),
+                TextColor(TEXT),
+            ));
         });
 }
 

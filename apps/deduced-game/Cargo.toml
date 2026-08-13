@@ -13,3 +13,4 @@ deduced-protocol = { path = "../../crates/deduced-protocol" }
 bevy = "0.19"
 ureq = { version = "3", features = ["json"] }
 serde_json = { workspace = true }
+tungstenite = { version = "0.30", default-features = false, features = ["handshake"] }

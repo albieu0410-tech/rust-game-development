@@ -1,5 +1,6 @@
 use bevy::prelude::*;
 
+use crate::screens::nav;
 use crate::state::{AppState, ContentRes, RoundRes, SelectedCategory};
 use crate::theme::{
     self, ACCENT, RADIUS_MD, RADIUS_SM, SURFACE, SURFACE_HOVER, SURFACE_PRESSED, TEXT, TEXT_DIM,
@@ -94,6 +95,8 @@ pub fn setup(mut commands: Commands, content: Res<ContentRes>) {
                     TextColor(TEXT_DIM),
                 ));
             });
+
+            nav::spawn(root, AppState::Categories);
         });
 }
 
@@ -130,6 +133,8 @@ pub fn handle_buttons(
                 *background = BackgroundColor(SURFACE_PRESSED);
                 selected.0 = category_button.0.clone();
                 round.controller = None;
+                round.is_daily = false;
+                round.daily_challenge_id = None;
                 next_state.set(AppState::Playing);
             }
             Interaction::Hovered => {

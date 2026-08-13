@@ -1,5 +1,6 @@
 use bevy::prelude::*;
 
+use crate::screens::nav;
 use crate::state::AppState;
 use crate::theme::{self, ACCENT, RADIUS_LG, RADIUS_MD, SURFACE, SURFACE_HOVER, TEXT, TEXT_DIM};
 
@@ -7,7 +8,7 @@ use crate::theme::{self, ACCENT, RADIUS_LG, RADIUS_MD, SURFACE, SURFACE_HOVER, T
 pub struct OnHomeScreen;
 
 #[derive(Component)]
-pub(crate) struct SoloButton;
+pub(crate) struct ModeButton(AppState);
 
 fn mode_card_node() -> (Node, BackgroundColor, BorderColor, BoxShadow) {
     (
@@ -75,7 +76,7 @@ pub fn setup(mut commands: Commands) {
                 },
             ));
 
-            root.spawn((SoloButton, Button, mode_card_node()))
+            root.spawn((ModeButton(AppState::Categories), Button, mode_card_node()))
                 .with_children(|card| {
                     card.spawn((Text::new("Solo"), theme::label_font(18.0), TextColor(TEXT)));
                     card.spawn((
@@ -85,31 +86,35 @@ pub fn setup(mut commands: Commands) {
                     ));
                 });
 
-            root.spawn(mode_card_node()).with_children(|card| {
-                card.spawn((
-                    Text::new("Daily Deduction"),
-                    theme::label_font(18.0),
-                    TextColor(TEXT_DIM),
-                ));
-                card.spawn((
-                    Text::new("One puzzle shared worldwide (coming soon)"),
-                    theme::body_font(13.0),
-                    TextColor(TEXT_DIM),
-                ));
-            });
+            root.spawn((ModeButton(AppState::Daily), Button, mode_card_node()))
+                .with_children(|card| {
+                    card.spawn((
+                        Text::new("Daily Deduction"),
+                        theme::label_font(18.0),
+                        TextColor(TEXT),
+                    ));
+                    card.spawn((
+                        Text::new("One puzzle shared worldwide"),
+                        theme::body_font(13.0),
+                        TextColor(TEXT_DIM),
+                    ));
+                });
 
-            root.spawn(mode_card_node()).with_children(|card| {
-                card.spawn((
-                    Text::new("Versus"),
-                    theme::label_font(18.0),
-                    TextColor(TEXT_DIM),
-                ));
-                card.spawn((
-                    Text::new("Challenge another player (coming soon)"),
-                    theme::body_font(13.0),
-                    TextColor(TEXT_DIM),
-                ));
-            });
+            root.spawn((ModeButton(AppState::Versus), Button, mode_card_node()))
+                .with_children(|card| {
+                    card.spawn((
+                        Text::new("Versus"),
+                        theme::label_font(18.0),
+                        TextColor(TEXT),
+                    ));
+                    card.spawn((
+                        Text::new("Challenge another player"),
+                        theme::body_font(13.0),
+                        TextColor(TEXT_DIM),
+                    ));
+                });
+
+            nav::spawn(root, AppState::Home);
         });
 }
 
@@ -119,16 +124,17 @@ pub fn teardown(mut commands: Commands, query: Query<Entity, With<OnHomeScreen>>
     }
 }
 
-type SoloButtonFilter = (Changed<Interaction>, With<SoloButton>);
-
 pub fn handle_buttons(
-    mut interactions: Query<(&Interaction, &mut BackgroundColor), SoloButtonFilter>,
+    mut interactions: Query<
+        (&Interaction, &ModeButton, &mut BackgroundColor),
+        Changed<Interaction>,
+    >,
     mut next_state: ResMut<NextState<AppState>>,
 ) {
-    for (interaction, mut background) in &mut interactions {
+    for (interaction, mode_button, mut background) in &mut interactions {
         match interaction {
             Interaction::Pressed => {
-                next_state.set(AppState::Categories);
+                next_state.set(mode_button.0);
             }
             Interaction::Hovered => *background = BackgroundColor(SURFACE_HOVER),
             Interaction::None => *background = BackgroundColor(SURFACE),

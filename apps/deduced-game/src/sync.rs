@@ -25,7 +25,8 @@ pub fn sync_profile_in_background(profile: &Profile) {
     };
 
     std::thread::spawn(move || {
-        let result = ureq::post("http://127.0.0.1:4000/profile/sync").send_json(&request);
+        let url = format!("{}/profile/sync", crate::server::BASE_URL);
+        let result = ureq::post(&url).send_json(&request);
         if let Err(err) = result {
             eprintln!("profile sync skipped (server unreachable?): {err}");
         }
